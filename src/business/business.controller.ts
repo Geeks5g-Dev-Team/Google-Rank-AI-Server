@@ -26,16 +26,16 @@ export class BusinessController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.businessService.findOne(Number(id));
+    return this.businessService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: UpdateBusinessDto) {
-    return this.businessService.update(Number(id), data);
+    return this.businessService.update(id, data);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.businessService.remove(Number(id));
+    return this.businessService.remove(id);
   }
 }

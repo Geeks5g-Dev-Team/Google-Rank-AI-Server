@@ -10,11 +10,11 @@ import {
 export class CreateBusinessDto {
   @IsNotEmpty()
   @IsString()
-  userId: string;
+  locationId: string;
 
   @IsNotEmpty()
   @IsString()
-  locationId: string;
+  userId: string;
 
   @IsNotEmpty()
   @IsString()

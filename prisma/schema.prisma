@@ -27,9 +27,8 @@ model User {
 }
 
 model Business {
-  id          Int      @id @default(autoincrement())
+  locationId  String   @id
   userId      String
-  locationId  String   @unique
   name        String
   phones      String[] @default([])
   location    String

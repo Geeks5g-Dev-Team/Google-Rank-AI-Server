@@ -14,9 +14,8 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Business" (
-    "id" SERIAL NOT NULL,
-    "userId" TEXT NOT NULL,
     "locationId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "locations" TEXT[],
     "services" TEXT[],
@@ -24,7 +23,7 @@ CREATE TABLE "Business" (
     "coordinates" JSONB NOT NULL DEFAULT '{}',
     "cid" TEXT,
 
-    CONSTRAINT "Business_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Business_pkey" PRIMARY KEY ("locationId")
 );
 
 -- CreateTable

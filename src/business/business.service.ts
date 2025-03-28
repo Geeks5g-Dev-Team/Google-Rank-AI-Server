@@ -34,15 +34,15 @@ export class BusinessService {
     return this.prisma.business.findMany();
   }
 
-  async findOne(id: number) {
-    return this.prisma.business.findUnique({ where: { id } });
+  async findOne(locationId: string) {
+    return this.prisma.business.findUnique({ where: { locationId } });
   }
 
-  async update(id: number, data: UpdateBusinessDto) {
-    return this.prisma.business.update({ where: { id }, data });
+  async update(locationId: string, data: UpdateBusinessDto) {
+    return this.prisma.business.update({ where: { locationId }, data });
   }
 
-  async remove(id: number) {
-    return this.prisma.business.delete({ where: { id } });
+  async remove(locationId: string) {
+    return this.prisma.business.delete({ where: { locationId } });
   }
 }
