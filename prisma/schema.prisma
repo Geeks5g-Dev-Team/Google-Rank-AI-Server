@@ -17,8 +17,8 @@ model User {
   userId       String   @id
   firstName    String
   lastName     String
-  businessName String
-  phone        String   @unique
+  businessName String   @default("")
+  phone        String   @default("") 
   email        String   @unique
   password     String
   token        Json   @default("{}")

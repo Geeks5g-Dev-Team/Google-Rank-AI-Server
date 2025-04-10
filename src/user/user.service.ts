@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 import { MailService } from '../mail/mail.service';
 
@@ -16,6 +17,18 @@ export class UserService {
     private mailService: MailService,
   ) {}
 
+  generateJwt(user: any) {
+    const payload = {
+      userId: user.userId,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      businessName: user.businessName,
+      phone: user.phone,
+      email: user.email,
+    };
+    return jwt.sign({ payload }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  }
+
   async create(data: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const newUser = await this.prisma.user.create({
@@ -24,7 +37,9 @@ export class UserService {
 
     await this.mailService.sendUserNotification(newUser.email);
     await this.mailService.sendUserNotificationToUser(newUser.email);
-    return newUser;
+
+    const token = this.generateJwt(newUser);
+    return { token };
   }
 
   async findAll() {
@@ -39,7 +54,9 @@ export class UserService {
     if (data.password) {
       data.password = await bcrypt.hash(data.password, 10);
     }
-    return this.prisma.user.update({ where: { userId }, data });
+    const updatedUser = this.prisma.user.update({ where: { userId }, data });
+    const token = this.generateJwt(updatedUser);
+    return { token };
   }
 
   async remove(userId: string) {
@@ -60,7 +77,8 @@ export class UserService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return user;
+    const token = this.generateJwt(user);
+    return { token };
   }
 
   async getToken(userId: string) {
@@ -74,5 +92,39 @@ export class UserService {
     }
 
     return JSON.stringify(user.token);
+  }
+
+  async findIdByEmail(email: string): Promise<{ userId: string } | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
+      select: { userId: true },
+    });
+  }
+
+  async changePassword(
+    userId: string,
+    dto: { currentPassword: string; newPassword: string },
+  ) {
+    const user = await this.prisma.user.findUnique({ where: { userId } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // If current password is set and user has one, validate it
+    if (dto.currentPassword && user.password) {
+      const isValid = await bcrypt.compare(dto.currentPassword, user.password);
+      if (!isValid) {
+        throw new UnauthorizedException('Current password is incorrect');
+      }
+    }
+
+    const hashed = await bcrypt.hash(dto.newPassword, 10);
+    await this.prisma.user.update({
+      where: { userId },
+      data: { password: hashed },
+    });
+
+    return { message: 'Password updated successfully' };
   }
 }
