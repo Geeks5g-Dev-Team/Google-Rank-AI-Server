@@ -38,4 +38,14 @@ export class BusinessController {
   remove(@Param('id') id: string) {
     return this.businessService.remove(id);
   }
+
+  @Get(':id/services')
+  getServices(@Param('id') locationId: string) {
+    return this.businessService.getServices(locationId);
+  }
+
+  @Get(':id/keywords')
+  getKeywords(@Param('id') locationId: string) {
+    return this.businessService.getKeywords(locationId);
+  }
 }

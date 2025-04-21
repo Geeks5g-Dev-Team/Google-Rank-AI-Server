@@ -9,6 +9,12 @@ import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 import { MailService } from '../mail/mail.service';
+import { instanceToPlain } from 'class-transformer';
+
+interface ConnectedAccount {
+  accountId: string;
+  token: any;
+}
 
 @Injectable()
 export class UserService {
@@ -32,7 +38,13 @@ export class UserService {
   async create(data: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const newUser = await this.prisma.user.create({
-      data: { ...data, password: hashedPassword },
+      data: {
+        ...data,
+        password: hashedPassword,
+        connectedAccounts: data.connectedAccounts
+          ? JSON.stringify(data.connectedAccounts)
+          : undefined,
+      },
     });
 
     await this.mailService.sendUserNotification(newUser.email);
@@ -54,7 +66,17 @@ export class UserService {
     if (data.password) {
       data.password = await bcrypt.hash(data.password, 10);
     }
-    const updatedUser = this.prisma.user.update({ where: { userId }, data });
+
+    const updatedUser = await this.prisma.user.update({
+      where: { userId },
+      data: {
+        ...data,
+        connectedAccounts: data.connectedAccounts
+          ? instanceToPlain(data.connectedAccounts) // ✅ convert to plain JSON-safe array
+          : undefined,
+      },
+    });
+
     const token = this.generateJwt(updatedUser);
     return { token };
   }
@@ -81,17 +103,17 @@ export class UserService {
     return { token };
   }
 
-  async getToken(userId: string) {
+  async getTokens(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { userId },
-      select: { token: true },
+      select: { connectedAccounts: true },
     });
 
-    if (!user || !user.token) {
+    if (!user || !user.connectedAccounts) {
       throw new NotFoundException('OAuth token not found');
     }
 
-    return JSON.stringify(user.token);
+    return JSON.stringify(user.connectedAccounts);
   }
 
   async findIdByEmail(email: string): Promise<{ userId: string } | null> {
@@ -126,5 +148,34 @@ export class UserService {
     });
 
     return { message: 'Password updated successfully' };
+  }
+
+  async getAllBusinesses(userId: string) {
+    const user = (await this.prisma.user.findUnique({
+      where: { userId },
+      select: { connectedAccounts: true },
+    })) as { connectedAccounts: ConnectedAccount[] | null };
+
+    if (!user || !user.connectedAccounts) {
+      throw new NotFoundException('User or connected accounts not found');
+    }
+
+    const connectedAccounts = user.connectedAccounts;
+
+    const accountIds = connectedAccounts.map((acc) => acc.accountId);
+
+    if (accountIds.length === 0) {
+      return [];
+    }
+
+    const businesses = await this.prisma.business.findMany({
+      where: {
+        userId: {
+          in: accountIds,
+        },
+      },
+    });
+
+    return businesses;
   }
 }

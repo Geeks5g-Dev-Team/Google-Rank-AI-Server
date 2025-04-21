@@ -21,7 +21,7 @@ model User {
   phone        String   @default("") 
   email        String   @unique
   password     String
-  token        Json   @default("{}")
+  connectedAccounts Json  @default("[]")
   createdAt    DateTime @default(now())
   businesses   Business[]
 }
@@ -30,7 +30,7 @@ model Business {
   locationId  String   @id
   userId      String
   name        String
-  phones      String[] @default([])
+  phones      String[]  @default([])
   location    String
   services    String[]  @default([])
   keywords    String[]  @default([]) //20 max
@@ -39,6 +39,7 @@ model Business {
   coordinates Json    @default("{}")
   cid         String?
   imagePrompt String? @default("")
+  gmbData     Json    @default("{}")
   user        User     @relation(fields: [userId], references: [userId])
   callLogs    CallLog[]
 }

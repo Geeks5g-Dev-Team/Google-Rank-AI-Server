@@ -43,6 +43,7 @@ export class UserController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: UpdateUserDto) {
+    console.log('Updating user with ID:', id, 'and data:', data);
     return this.userService.update(id, data);
   }
 
@@ -57,9 +58,9 @@ export class UserController {
     return this.userService.login(data.email, data.password);
   }
 
-  @Get(':userId/token')
-  async getOauthToken(@Param('userId') userId: string) {
-    return this.userService.getToken(userId);
+  @Get(':userId/tokens')
+  async getOauthTokens(@Param('userId') userId: string) {
+    return this.userService.getTokens(userId);
   }
 
   @Patch(':userId/password')
@@ -68,5 +69,10 @@ export class UserController {
     @Body() dto: { currentPassword: string; newPassword: string },
   ) {
     return this.userService.changePassword(userId, dto);
+  }
+
+  @Get(':userId/businesses')
+  async getUserBusinesses(@Param('userId') userId: string) {
+    return this.userService.getAllBusinesses(userId);
   }
 }

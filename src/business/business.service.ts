@@ -45,4 +45,30 @@ export class BusinessService {
   async remove(locationId: string) {
     return this.prisma.business.delete({ where: { locationId } });
   }
+
+  async getServices(locationId: string) {
+    const business = await this.prisma.business.findUnique({
+      where: { locationId },
+      select: { services: true },
+    });
+
+    if (!business) {
+      throw new Error('Business not found');
+    }
+
+    return business.services;
+  }
+
+  async getKeywords(locationId: string) {
+    const business = await this.prisma.business.findUnique({
+      where: { locationId },
+      select: { keywords: true },
+    });
+
+    if (!business) {
+      throw new Error('Business not found');
+    }
+
+    return business.keywords;
+  }
 }
