@@ -39,6 +39,8 @@ model Business {
   coordinates Json    @default("{}")
   cid         String?
   imagePrompt String? @default("")
+  active      Boolean  @default(false)
+  createdAt   DateTime @default(now())
   gmbData     Json    @default("{}")
   user        User     @relation(fields: [userId], references: [userId])
   callLogs    CallLog[]

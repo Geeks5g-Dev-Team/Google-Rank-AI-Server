@@ -42,7 +42,7 @@ export class UserService {
         ...data,
         password: hashedPassword,
         connectedAccounts: data.connectedAccounts
-          ? JSON.stringify(data.connectedAccounts)
+          ? instanceToPlain(data.connectedAccounts)
           : undefined,
       },
     });
