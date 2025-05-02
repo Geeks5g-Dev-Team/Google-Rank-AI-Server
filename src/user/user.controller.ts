@@ -9,9 +9,7 @@ import {
   HttpCode,
   Query,
   BadRequestException,
-  Res,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 
@@ -55,26 +53,9 @@ export class UserController {
   }
 
   @Post('login')
-  async login(
-    @Body() body: { email: string; password: string },
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const { token } = await this.userService.login(body.email, body.password);
-
-    res.cookie('session', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 1000 * 60 * 60 * 24 * 5, // 5 days
-    });
-
-    return { success: true };
-  }
-
-  @Post('logout')
-  logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('session');
-    return { success: true };
+  @HttpCode(200)
+  login(@Body() data: { email: string; password: string }) {
+    return this.userService.login(data.email, data.password);
   }
 
   @Get(':userId/tokens')
