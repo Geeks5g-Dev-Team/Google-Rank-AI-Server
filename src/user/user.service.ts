@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { ConnectedAccountDto } from './dto/connectedAccount.dto';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 import { MailService } from '../mail/mail.service';
@@ -13,6 +14,7 @@ import { instanceToPlain } from 'class-transformer';
 
 interface ConnectedAccount {
   accountId: string;
+  provider: string;
   token: any;
 }
 
@@ -160,9 +162,11 @@ export class UserService {
       throw new NotFoundException('User or connected accounts not found');
     }
 
-    const connectedAccounts = user.connectedAccounts;
+    const googleAccounts = user.connectedAccounts.filter(
+      (acc) => acc.provider === 'google',
+    );
 
-    const accountIds = connectedAccounts.map((acc) => acc.accountId);
+    const accountIds = googleAccounts.map((acc) => acc.accountId);
 
     if (accountIds.length === 0) {
       return [];
