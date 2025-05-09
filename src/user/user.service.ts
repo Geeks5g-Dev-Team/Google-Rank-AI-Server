@@ -27,12 +27,7 @@ export class UserService {
 
   generateJwt(user: any) {
     const payload = {
-      userId: user.userId,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      businessName: user.businessName,
-      phone: user.phone,
-      email: user.email,
+      user
     };
     return jwt.sign({ payload }, process.env.JWT_SECRET, { expiresIn: '1h' });
   }
