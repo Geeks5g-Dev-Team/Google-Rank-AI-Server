@@ -11,6 +11,7 @@ import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 import { MailService } from '../mail/mail.service';
 import { instanceToPlain } from 'class-transformer';
+import { connect } from 'http2';
 
 interface ConnectedAccount {
   accountId: string;
@@ -27,7 +28,14 @@ export class UserService {
 
   generateJwt(user: any) {
     const payload = {
-      user
+      userId: user.userId,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      businessName: user.businessName,
+      phone: user.phone,
+      email: user.email,
+      credits: user.credits,
+      createdAt: user.createdAt,
     };
     return jwt.sign({ payload }, process.env.JWT_SECRET, { expiresIn: '1h' });
   }
