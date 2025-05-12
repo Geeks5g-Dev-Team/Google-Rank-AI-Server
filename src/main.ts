@@ -10,6 +10,8 @@ async function bootstrap() {
       'https://taktek-company-panel-1.onrender.com',
       'https://company.taktek.app',
       'https://www.taktek.app',
+      'http://localhost:3001',
+      'https://dashboard.ranktitan.ai',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
