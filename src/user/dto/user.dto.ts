@@ -4,10 +4,12 @@ import {
   IsBoolean,
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
 import { ConnectedAccountDto } from './connectedAccount.dto';
+import { Type } from 'class-transformer';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -39,6 +41,8 @@ export class CreateUserDto {
 
   @IsArray()
   @ValidateNested({ each: true })
+  @Type(() => ConnectedAccountDto)
+  @IsOptional()
   connectedAccounts?: ConnectedAccountDto[];
 
   @IsBoolean()

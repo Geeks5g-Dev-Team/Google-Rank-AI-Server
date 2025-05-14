@@ -1,11 +1,14 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsObject, IsOptional } from 'class-validator';
 
 export class ConnectedAccountDto {
   @IsString()
-  @IsNotEmpty()
-  accountId: string;
+  @IsOptional()
+  accountId?: string;
+
   @IsString()
   @IsNotEmpty()
-  provider: string;
-  token: any;
+  provider?: string;
+
+  @IsObject()
+  token?: object;
 }
