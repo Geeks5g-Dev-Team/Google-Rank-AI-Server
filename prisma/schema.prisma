@@ -45,6 +45,8 @@ model Business {
   gmbData     Json    @default("{}")
   user        User     @relation(fields: [userId], references: [userId])
   callLogs    CallLog[]
+  post Post[]
+  review Review[]
 }
 
 model CallLog {
@@ -53,4 +55,26 @@ model CallLog {
   date       DateTime @default(now())
   locationId String
   business   Business @relation(fields: [locationId], references: [locationId])
+}
+
+model Post {
+  id            String      @id @default(uuid())
+  locationId    String
+  postContent   String      @default("")
+  postImage     String?     @default("")
+  postUrl       String?     @default("")
+  createdAt     DateTime    @default(now())
+  business      Business    @relation(fields: [locationId], references: [locationId])
+}
+
+model Review {
+  id              String      @id @default(uuid())
+  locationId      String
+  reviewContent   String      @default("")
+  replyContent    String?     @default("")
+  reviewUrl       String?     @default("")
+  stars           Int         @default(0)
+  author          String?     @default("")
+  createdAt       DateTime    @default(now())
+  business        Business    @relation(fields: [locationId], references: [locationId])
 }
