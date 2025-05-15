@@ -4,14 +4,14 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true, // Strip properties that have no decorators
-      forbidNonWhitelisted: true, // ❗ Throw error if unknown properties are present
-      forbidUnknownValues: true, // ❗ Throw error on completely invalid inputs (e.g., null)
-      transform: true, // Automatically transform payloads to DTO instances
-    }),
-  );
+  // app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     whitelist: true, // Strip properties that have no decorators
+  //     forbidNonWhitelisted: true, // ❗ Throw error if unknown properties are present
+  //     forbidUnknownValues: true, // ❗ Throw error on completely invalid inputs (e.g., null)
+  //     transform: true, // Automatically transform payloads to DTO instances
+  //   }),
+  // );
 
   app.enableCors({
     origin: [
