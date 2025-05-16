@@ -35,6 +35,11 @@ let BusinessService = class BusinessService {
     async findAll() {
         return this.prisma.business.findMany();
     }
+    async findAllByUserId(userId) {
+        return this.prisma.business.findMany({
+            where: { userId },
+        });
+    }
     async findOne(locationId) {
         return this.prisma.business.findUnique({ where: { locationId } });
     }

@@ -6,13 +6,14 @@ import {
   Param,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { BusinessService } from './business.service';
 import { CreateBusinessDto, UpdateBusinessDto } from './dto/business.dto';
 
 @Controller('businesses')
 export class BusinessController {
-  constructor(private readonly businessService: BusinessService) {}
+  constructor(private readonly businessService: BusinessService) { }
 
   @Post()
   create(@Body() data: CreateBusinessDto) {
@@ -20,7 +21,10 @@ export class BusinessController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('userId') userId?: string) {
+    if (userId) {
+      return this.businessService.findAllByUserId(userId);
+    }
     return this.businessService.findAll();
   }
 

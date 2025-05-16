@@ -25,15 +25,38 @@ let ResponseGeneratorService = class ResponseGeneratorService {
             const reviewerName = review.reviewer?.displayName || '';
             const starRating = review.starRating || 'FIVE';
             const reviewText = review.comment || '';
+            const locationAddress = businessData.location || '';
+            const cityMatch = locationAddress.match(/,\s*([^,]+),\s*([A-Z]{2}),\s*US$/);
+            const cityName = cityMatch ? cityMatch[1] : '';
+            const streetNameMatch = locationAddress.match(/^([^,]+),/);
+            const streetName = streetNameMatch ? streetNameMatch[1] : '';
+            const formattedServices = (businessData.services || []).map((service) => {
+                return service.replace('job_type_id:', '')
+                    .replace(/_/g, ' ')
+                    .trim();
+            });
+            const relevantServices = formattedServices.length > 0
+                ? formattedServices.slice(0, 3).join(', ')
+                : '';
             if (!reviewText.trim()) {
                 return `Thank you ${reviewerName} for your ${starRating.toLowerCase()} star review!`;
             }
-            const prompt = `Generate a professional, grateful and enthusiastic response for ${businessData.name} to a positive review.
-                          The response must be in exactly the same language as the review comment.
-                          Keep it concise (1-2 short paragraphs).
-                          Mention specific details from the review when possible.
-                          Reviewer name: ${reviewerName}
-                          Review: "${reviewText}"`;
+            let prompt = `**Do NOT include the original review text in the response.**
+Generate a professional, grateful, and enthusiastic response for ${businessData.name} to a positive review.
+The response must be in exactly the same language as the review comment.
+Keep it concise (1-2 short paragraphs).
+Mention specific details from the review when possible
+Reviewer name: ${reviewerName}
+Review comment to respond to: "${reviewText}"`;
+            if (cityName) {
+                prompt += `\nBusiness location: ${streetName}, ${cityName}.`;
+            }
+            else if (cityName) {
+                prompt += `\nBusiness city: ${cityName}.`;
+            }
+            if (relevantServices) {
+                prompt += `\nBusiness services for context: ${relevantServices}.`;
+            }
             const result = await this.geminiService.generateContent({
                 model: 'gemini-2.0-flash-001',
                 contents: prompt,

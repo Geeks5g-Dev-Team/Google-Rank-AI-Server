@@ -20,7 +20,7 @@ export declare class BusinessController {
         active: boolean;
         gmbData: import("@prisma/client/runtime/library").JsonValue;
     }>;
-    findAll(): Promise<{
+    findAll(userId?: string): Promise<{
         userId: string;
         createdAt: Date;
         name: string;

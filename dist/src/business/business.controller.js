@@ -24,7 +24,10 @@ let BusinessController = class BusinessController {
     create(data) {
         return this.businessService.create(data);
     }
-    findAll() {
+    findAll(userId) {
+        if (userId) {
+            return this.businessService.findAllByUserId(userId);
+        }
         return this.businessService.findAll();
     }
     findOne(id) {
@@ -53,8 +56,9 @@ __decorate([
 ], BusinessController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('userId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], BusinessController.prototype, "findAll", null);
 __decorate([

@@ -39,6 +39,23 @@ export declare class BusinessService {
         active: boolean;
         gmbData: import("@prisma/client/runtime/library").JsonValue;
     }[]>;
+    findAllByUserId(userId: string): Promise<{
+        userId: string;
+        createdAt: Date;
+        name: string;
+        locationId: string;
+        phones: string[];
+        location: string;
+        services: string[];
+        keywords: string[];
+        targetLocations: string[];
+        website: string | null;
+        coordinates: import("@prisma/client/runtime/library").JsonValue;
+        cid: string | null;
+        imagePrompt: string | null;
+        active: boolean;
+        gmbData: import("@prisma/client/runtime/library").JsonValue;
+    }[]>;
     findOne(locationId: string): Promise<{
         userId: string;
         createdAt: Date;

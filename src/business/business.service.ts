@@ -8,7 +8,7 @@ export class BusinessService {
   constructor(
     private prisma: PrismaService,
     private mailService: MailService,
-  ) {}
+  ) { }
 
   async create(data: CreateBusinessDto) {
     const newBusiness = await this.prisma.business.create({ data });
@@ -32,6 +32,12 @@ export class BusinessService {
 
   async findAll() {
     return this.prisma.business.findMany();
+  }
+
+  async findAllByUserId(userId: string) {
+    return this.prisma.business.findMany({
+      where: { userId },
+    });
   }
 
   async findOne(locationId: string) {
