@@ -1,11 +1,11 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from "@nestjs/mapped-types";
 import {
   IsNotEmpty,
   IsString,
   IsOptional,
   IsArray,
   ArrayMaxSize,
-} from 'class-validator';
+} from "class-validator";
 
 export class CreateBusinessDto {
   @IsNotEmpty()

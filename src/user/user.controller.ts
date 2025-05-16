@@ -15,7 +15,7 @@ import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   create(@Body() data: CreateUserDto) {
@@ -43,7 +43,6 @@ export class UserController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: UpdateUserDto) {
-    console.log('Updating user with ID:', id, 'and data:', data);
     return this.userService.update(id, data);
   }
 
