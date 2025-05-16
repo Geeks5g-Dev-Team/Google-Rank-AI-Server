@@ -23,8 +23,6 @@ export class ResponseGeneratorService {
             const locationAddress = businessData.location || '';
             const cityMatch = locationAddress.match(/,\s*([^,]+),\s*([A-Z]{2}),\s*US$/);
             const cityName = cityMatch ? cityMatch[1] : '';
-            const streetNameMatch = locationAddress.match(/^([^,]+),/);
-            const streetName = streetNameMatch ? streetNameMatch[1] : '';
 
             const formattedServices = (businessData.services || []).map((service: string) => {
                 return service.replace('job_type_id:', '')
@@ -50,8 +48,6 @@ Reviewer name: ${reviewerName}
 Review comment to respond to: "${reviewText}"`;
 
             if (cityName) {
-                prompt += `\nBusiness location: ${streetName}, ${cityName}.`;
-            } else if (cityName) {
                 prompt += `\nBusiness city: ${cityName}.`;
             }
 
